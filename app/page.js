@@ -3,134 +3,266 @@
 import { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
   const [verse, setVerse] = useState({
-    text: "Loading today's verse...",
     reference: "",
-    lesson: "Loading today's lesson..."
+    text: "Loading today's verse...",
+    sermon: "Preparing today's message..."
   });
 
-  // Bible verses collection with references and lessons
-  const bibleVerses = [
-    {
-      text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
-      reference: "John 3:16",
-      lesson: "This verse reminds us of God's immense love for humanity. The depth of this love is demonstrated through the sacrifice of His Son, Jesus Christ. Today, reflect on how this divine love has manifested in your own life. How can you share this love with others? Consider writing down three ways you can demonstrate selfless love to someone today."
-    },
-    {
-      text: "Trust in the LORD with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
-      reference: "Proverbs 3:5-6",
-      lesson: "When we face life's challenges, our natural instinct is to rely on our own wisdom and resources. This verse invites us to a deeper trust in God's guidance. Today, identify an area in your life where you're struggling to trust God fully. What would it look like to surrender this area to Him? Practice replacing worry with prayer whenever your thoughts drift to this concern."
-    },
-    {
-      text: "I can do all this through him who gives me strength.",
-      reference: "Philippians 4:13",
-      lesson: "Paul wrote these words while imprisoned, showing that God's strength transcends our circumstances. This verse isn't promising we can do anything we want, but rather that we can endure any situation with Christ's strength. What challenge are you facing that seems impossible? How might viewing it through the lens of Christ's strength change your perspective? Spend time in prayer asking for His strength today."
-    },
-    {
-      text: "Be kind and compassionate to one another, forgiving each other, just as in Christ God forgave you.",
-      reference: "Ephesians 4:32",
-      lesson: "Forgiveness can be one of the hardest commands to follow, yet it's central to our Christian walk. Our ability to forgive others is directly connected to our understanding of how much we've been forgiven. Is there someone you need to forgive? How might extending forgiveness free both you and them? Consider how God's forgiveness of your sins can motivate you to forgive others."
-    },
-    {
-      text: "The LORD is my shepherd, I lack nothing. He makes me lie down in green pastures, he leads me beside quiet waters, he refreshes my soul.",
-      reference: "Psalm 23:1-3",
-      lesson: "This beloved psalm paints a picture of God as our provider and caretaker. Like a shepherd who ensures his sheep have everything they need, God provides for our physical and spiritual needs. In what areas of your life do you need to experience God's restoration? Take time today to rest in His presence, allowing Him to refresh your soul amid life's demands."
-    },
-    {
-      text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the LORD your God will be with you wherever you go.",
-      reference: "Joshua 1:9",
-      lesson: "God spoke these words to Joshua as he was about to lead Israel into the Promised Land—a daunting task. Fear and discouragement are natural human responses to challenges, but God's presence gives us courage. What situation are you facing that requires courage? How does God's promise to be with you change how you approach it? Make a decision today to take one brave step forward."
-    },
-    {
-      text: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.",
-      reference: "Romans 8:28",
-      lesson: "This verse doesn't promise that everything that happens is good, but that God can work through all circumstances—even painful ones—to accomplish good purposes in the lives of those who love Him. Think about a difficult situation in your life. How might God be working through this challenge? Look for evidence of His hand even in unexpected places."
-    },
-    {
-      text: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God. And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus.",
-      reference: "Philippians 4:6-7",
-      lesson: "Anxiety is a common human experience, but God offers us a better way to handle our worries. Through prayer with thanksgiving, we can experience His supernatural peace. What anxieties are you carrying today? Try this exercise: For each worry that comes to mind, turn it into a prayer request and then express gratitude for something related to that situation."
-    },
-    {
-      text: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It does not dishonor others, it is not self-seeking, it is not easily angered, it keeps no record of wrongs.",
-      reference: "1 Corinthians 13:4-5",
-      lesson: "This passage defines love not as a feeling but as actions and attitudes. God calls us to a love that transcends our emotions and natural tendencies. Choose one quality of love mentioned in this verse (patience, kindness, humility, etc.) and focus on practicing it intentionally today. Notice how this conscious choice affects your interactions with others."
-    },
-    {
-      text: "The LORD is close to the brokenhearted and saves those who are crushed in spirit.",
-      reference: "Psalm 34:18",
-      lesson: "In times of heartbreak and despair, God doesn't distance Himself—He draws near. This verse offers comfort by assuring us of God's special closeness during our most painful moments. If you're experiencing grief or pain today, try to sense God's presence with you. If you're not currently in a season of suffering, reach out to someone who is, being God's hands and feet to them in their time of need."
-    },
-    {
-      text: "But seek first his kingdom and his righteousness, and all these things will be given to you as well.",
-      reference: "Matthew 6:33",
-      lesson: "Jesus teaches us about priorities in this verse. When we put God's kingdom and righteousness at the top of our list, everything else falls into place. What occupies most of your thoughts and energy? Is there something competing with God for first place in your life? Consider how your daily decisions would change if seeking God's kingdom were truly your highest priority."
-    },
-    {
-      text: "Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.",
-      reference: "Galatians 6:9",
-      lesson: "Doing good consistently can be exhausting, especially when we don't see immediate results. This verse encourages persistence, promising that our faithful efforts will eventually bear fruit. Are there areas in your life where you've been doing good but feel tempted to give up? What might it look like to persevere just a little longer? Remember that God's timing often differs from our own."
-    },
-    {
-      text: "Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!",
-      reference: "2 Corinthians 5:17",
-      lesson: "When we place our faith in Christ, we experience a spiritual transformation—we become new creations. The old life of sin no longer defines us. How have you experienced this newness in your own life? In what areas are you still living as if the old way still controls you? Thank God today for the specific ways He has made you new, and ask for help in the areas where you still struggle."
-    },
-    {
-      text: "But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control. Against such things there is no law.",
-      reference: "Galatians 5:22-23",
-      lesson: "The fruit of the Spirit describes the character qualities that develop naturally when God's Spirit lives within us. Unlike forced behavior modification, these traits grow organically as we stay connected to God. Which of these fruits is most evident in your life right now? Which one seems to be least developed? Spend time thanking God for His work in you and asking for continued growth in areas of weakness."
-    },
-    {
-      text: "Cast all your anxiety on him because he cares for you.",
-      reference: "1 Peter 5:7",
-      lesson: "This verse offers us a powerful invitation to release our worries to God. The foundation for this transfer is God's deep care for us. Imagine physically taking your concerns and placing them in God's hands. What anxieties do you need to cast on Him today? Remember that holding onto our worries implies we don't fully trust God's care for us. Practice the releasing process through prayer."
-    }
-  ];
+  // Function to get a random Bible book and chapter
+  const getRandomBibleLocation = () => {
+    // NIV Bible books with chapter counts
+    const bibleStructure = [
+      { name: "Genesis", chapters: 50 },
+      { name: "Exodus", chapters: 40 },
+      { name: "Leviticus", chapters: 27 },
+      { name: "Numbers", chapters: 36 },
+      { name: "Deuteronomy", chapters: 34 },
+      { name: "Joshua", chapters: 24 },
+      { name: "Judges", chapters: 21 },
+      { name: "Ruth", chapters: 4 },
+      { name: "1 Samuel", chapters: 31 },
+      { name: "2 Samuel", chapters: 24 },
+      { name: "1 Kings", chapters: 22 },
+      { name: "2 Kings", chapters: 25 },
+      { name: "1 Chronicles", chapters: 29 },
+      { name: "2 Chronicles", chapters: 36 },
+      { name: "Ezra", chapters: 10 },
+      { name: "Nehemiah", chapters: 13 },
+      { name: "Esther", chapters: 10 },
+      { name: "Job", chapters: 42 },
+      { name: "Psalms", chapters: 150 },
+      { name: "Proverbs", chapters: 31 },
+      { name: "Ecclesiastes", chapters: 12 },
+      { name: "Song of Solomon", chapters: 8 },
+      { name: "Isaiah", chapters: 66 },
+      { name: "Jeremiah", chapters: 52 },
+      { name: "Lamentations", chapters: 5 },
+      { name: "Ezekiel", chapters: 48 },
+      { name: "Daniel", chapters: 12 },
+      { name: "Hosea", chapters: 14 },
+      { name: "Joel", chapters: 3 },
+      { name: "Amos", chapters: 9 },
+      { name: "Obadiah", chapters: 1 },
+      { name: "Jonah", chapters: 4 },
+      { name: "Micah", chapters: 7 },
+      { name: "Nahum", chapters: 3 },
+      { name: "Habakkuk", chapters: 3 },
+      { name: "Zephaniah", chapters: 3 },
+      { name: "Haggai", chapters: 2 },
+      { name: "Zechariah", chapters: 14 },
+      { name: "Malachi", chapters: 4 },
+      { name: "Matthew", chapters: 28 },
+      { name: "Mark", chapters: 16 },
+      { name: "Luke", chapters: 24 },
+      { name: "John", chapters: 21 },
+      { name: "Acts", chapters: 28 },
+      { name: "Romans", chapters: 16 },
+      { name: "1 Corinthians", chapters: 16 },
+      { name: "2 Corinthians", chapters: 13 },
+      { name: "Galatians", chapters: 6 },
+      { name: "Ephesians", chapters: 6 },
+      { name: "Philippians", chapters: 4 },
+      { name: "Colossians", chapters: 4 },
+      { name: "1 Thessalonians", chapters: 5 },
+      { name: "2 Thessalonians", chapters: 3 },
+      { name: "1 Timothy", chapters: 6 },
+      { name: "2 Timothy", chapters: 4 },
+      { name: "Titus", chapters: 3 },
+      { name: "Philemon", chapters: 1 },
+      { name: "Hebrews", chapters: 13 },
+      { name: "James", chapters: 5 },
+      { name: "1 Peter", chapters: 5 },
+      { name: "2 Peter", chapters: 3 },
+      { name: "1 John", chapters: 5 },
+      { name: "2 John", chapters: 1 },
+      { name: "3 John", chapters: 1 },
+      { name: "Jude", chapters: 1 },
+      { name: "Revelation", chapters: 22 }
+    ];
 
-  // Function to display a verse based on the day of the year
-  const displayDailyVerse = () => {
-    const today = new Date();
-    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-    const verseIndex = dayOfYear % bibleVerses.length;
+    // Select random book
+    const randomBookIndex = Math.floor(Math.random() * bibleStructure.length);
+    const selectedBook = bibleStructure[randomBookIndex];
     
-    setVerse(bibleVerses[verseIndex]);
+    // Select random chapter
+    const randomChapter = Math.floor(Math.random() * selectedBook.chapters) + 1;
+    
+    return {
+      book: selectedBook.name,
+      chapter: randomChapter
+    };
   };
 
-  // Function to display a random verse
-  const displayRandomVerse = () => {
-    const randomIndex = Math.floor(Math.random() * bibleVerses.length);
-    setVerse(bibleVerses[randomIndex]);
+  // Generate sermon content based on verse text and reference
+  const generateSermon = (reference, text) => {
+    // Parse the reference to get book and other details
+    const parts = reference.split(' ');
+    let book = '';
+    if (parts[0] === '1' || parts[0] === '2' || parts[0] === '3') {
+      book = `${parts[0]} ${parts[1]}`;
+    } else {
+      book = parts[0];
+    }
+
+    // Template-based sermon generation
+    // This is a simplified version - in a real app you might use a more sophisticated approach
+    const introTemplates = [
+      `Today we turn our hearts and minds to ${reference}, which tells us "${text}" These powerful words from the book of ${book} offer us profound insight into God's character and His plan for our lives.`,
+      `The Scripture passage from ${reference} states, "${text}" What a profound statement that resonates deeply with our daily walk with Christ.`,
+      `In our journey through Scripture today, we encounter these words from ${reference}: "${text}" Let's explore together what God is speaking to us through this passage.`
+    ];
+
+    const middleTemplates = [
+      `When we examine this passage in context, we see that it speaks to the fundamental nature of faith and how we're called to live it out. The words "${text}" challenge us to consider how our daily choices reflect our trust in God's promises.`,
+      `These words come to us across thousands of years, yet they remain as relevant today as when they were first written. The author of ${book} understood something essential about our relationship with God that we still need to hear today.`,
+      `This verse reminds us that God's word is living and active, speaking into our specific circumstances. The phrase "${text}" isn't just ancient wisdom—it's a present reality that can transform how we approach our challenges.`
+    ];
+
+    const applicationTemplates = [
+      `How might this truth change how you approach your week? Consider the areas in your life where you need to remember that "${text}" Could it be in your relationships, your work, or your personal spiritual journey?`,
+      `I invite you to reflect on how these words from ${reference} might reshape your perspective on the challenges you're facing. What would it look like to fully embrace the truth that "${text}" in your daily life?`,
+      `As we close our time with this passage, let's consider practical ways to apply this Scripture. Perhaps you need to write out this verse and place it somewhere visible, or maybe you need to share this truth with someone who's struggling.`
+    ];
+
+    const conclusionTemplates = [
+      `As we conclude our reflection on ${reference}, let's pray that God would write these words on our hearts. May "${text}" become more than just words we read—may they become a lived reality in our daily walk with Christ.`,
+      `Let's carry the truth of "${text}" with us this week, allowing it to shape our thoughts, words, and actions as we seek to honor God in all things.`,
+      `May the powerful truth from ${reference} that "${text}" bring transformation to your life as you meditate on it throughout the coming days.`
+    ];
+
+    // Select random templates from each category
+    const intro = introTemplates[Math.floor(Math.random() * introTemplates.length)];
+    const middle = middleTemplates[Math.floor(Math.random() * middleTemplates.length)];
+    const application = applicationTemplates[Math.floor(Math.random() * applicationTemplates.length)];
+    const conclusion = conclusionTemplates[Math.floor(Math.random() * conclusionTemplates.length)];
+
+    // Create contextual paragraph based on the book
+    let contextParagraph = '';
+    
+    // Old Testament Historical Books
+    if (['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', 'Ezra', 'Nehemiah', 'Esther'].includes(book)) {
+      contextParagraph = `In the historical context of ${book}, we see God's faithfulness to His covenant people. This passage reminds us that God's plan unfolds through human history, even when circumstances seem challenging. Just as God worked through the lives of these ancient people, He continues to work in our lives today, guiding us with the same faithfulness.`;
+    }
+    // Wisdom Literature
+    else if (['Job', 'Psalms', 'Proverbs', 'Ecclesiastes', 'Song of Solomon'].includes(book)) {
+      contextParagraph = `${book} is part of the Bible's wisdom literature, offering timeless counsel for living a life that honors God. These inspired words provide practical guidance while pointing us to deeper spiritual truths. Just as the ancient Israelites treasured these teachings, we too can find direction for our daily decisions.`;
+    }
+    // Prophetic Books
+    else if (['Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea', 'Joel', 'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi'].includes(book)) {
+      contextParagraph = `The prophetic message of ${book} calls God's people back to faithfulness. Though spoken to ancient Israel, these words continue to challenge and inspire us today. The prophet reminds us that God is both just and merciful, calling us to authentic relationship with Him rather than mere religious observance.`;
+    }
+    // Gospels
+    else if (['Matthew', 'Mark', 'Luke', 'John'].includes(book)) {
+      contextParagraph = `In the Gospel of ${book}, we encounter Jesus Christ—His life, teachings, death, and resurrection. This passage helps us understand who Jesus is and what it means to follow Him. Through these inspired words, we're invited to see Jesus more clearly and love Him more dearly.`;
+    }
+    // Epistles and Revelation
+    else {
+      contextParagraph = `The book of ${book} was written to guide early Christians in understanding their faith and living it out in community. These words offer practical wisdom for the church then and now. As we read this passage, we're connected to the faith of those first believers while receiving guidance for our contemporary challenges.`;
+    }
+
+    // Combine all parts into a complete sermon
+    return `${intro}\n\n${contextParagraph}\n\n${middle}\n\n${application}\n\n${conclusion}`;
   };
 
-  // Initialize with today's verse when the component mounts
+  // Function to fetch a random Bible verse
+  const fetchRandomVerse = async () => {
+    setIsLoading(true);
+    try {
+      // Get random Bible location
+      const location = getRandomBibleLocation();
+      
+      // Fetch from Bible API
+      const response = await fetch(`https://bible-api.com/${location.book}+${location.chapter}?translation=niv`);
+      const data = await response.json();
+      
+      // If chapter has verses, pick a random one
+      if (data.verses && data.verses.length > 0) {
+        const randomVerseIndex = Math.floor(Math.random() * data.verses.length);
+        const selectedVerse = data.verses[randomVerseIndex];
+        
+        // Generate sermon based on verse content
+        const sermonContent = generateSermon(selectedVerse.reference, selectedVerse.text);
+        
+        setVerse({
+          reference: selectedVerse.reference,
+          text: selectedVerse.text,
+          sermon: sermonContent
+        });
+      } else {
+        // Fallback in case API doesn't return expected data
+        getBackupVerse();
+      }
+    } catch (error) {
+      console.error("Error fetching Bible verse:", error);
+      getBackupVerse();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Backup function in case API fails
+  const getBackupVerse = () => {
+    const backupVerses = [
+      {
+        reference: "John 3:16",
+        text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
+        sermon: "The message of John 3:16 is often called the gospel in a nutshell. This single verse captures the essence of God's redemptive plan for humanity. The love described here isn't passive or sentimental—it's active and sacrificial. God didn't just feel love for the world; He gave His Son.\n\nThe Gospel of John consistently emphasizes the themes of light, life, and love. This verse appears in Jesus' conversation with Nicodemus, a religious leader seeking understanding. Jesus reveals that God's love extends far beyond the boundaries Nicodemus might have imagined.\n\nThe phrase 'For God so loved the world' reminds us that God's love isn't restricted to a particular group or nation. It encompasses all of humanity in its broken, fallen state. This love isn't earned or deserved—it's freely given. The word 'so' speaks to both the manner and measure of this love: it's beyond comprehension.\n\nHow might this truth impact your interactions with others? If God loved the world—including people who are different from you or even hostile to you—how should that shape your attitude toward them? Consider how your words and actions this week might reflect the expansive love described in this verse.\n\nAs we close, let John 3:16 remind you that you are personally included in God's love. May this foundational truth give you confidence to face whatever challenges come your way this week, knowing you are deeply loved by the Creator of the universe."
+      },
+      {
+        reference: "Philippians 4:13",
+        text: "I can do all this through him who gives me strength.",
+        sermon: "Philippians 4:13 is one of the most quoted—and often misunderstood—verses in the Bible. 'I can do all this through him who gives me strength' isn't a promise of superhuman abilities or guaranteed success in any endeavor we choose. Rather, it's a testimony to Christ's sustaining power in every circumstance.\n\nThe apostle Paul wrote these words while in prison, facing an uncertain future. In the surrounding verses, he speaks about learning to be content whether living in plenty or in want. This context is crucial—Paul isn't claiming he can accomplish anything he sets his mind to; he's declaring that through Christ, he can endure any situation with the right perspective.\n\nThis epistle to the Philippians emphasizes joy and contentment regardless of circumstances. Paul's statement reflects a profound spiritual truth: our sufficiency is found not in ourselves but in Christ. The phrase 'through him who gives me strength' points to an ongoing transfer of divine power that sustains us.\n\nTake a moment to consider what challenges you're facing right now. Perhaps it's financial pressure, relationship difficulties, health concerns, or workplace stress. Rather than asking for these circumstances to immediately change, how might you invite Christ's strength to sustain you within them? What would contentment look like even if your situation remains difficult?\n\nAs we conclude, may Philippians 4:13 remind you that you're never expected to face life's challenges in your own strength. Christ offers His power not just for spectacular achievements but for daily faithfulness. Let's walk forward in the confidence that His strength is made perfect in our weakness."
+      }
+    ];
+
+    const randomIndex = Math.floor(Math.random() * backupVerses.length);
+    setVerse(backupVerses[randomIndex]);
+  };
+
+  // Load initial verse when component mounts
   useEffect(() => {
-    displayDailyVerse();
+    fetchRandomVerse();
   }, []);
 
   return (
     <main className="min-h-screen p-4 md:p-8 bg-gray-50">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6 md:p-8">
         <header className="text-center mb-8">
-          <h1 className="text-2xl md:text-3xl font-serif text-green-800">Daily Bible Verse</h1>
-          <p className="text-gray-600">Reflect on God's word each day</p>
+          <h1 className="text-2xl md:text-3xl font-serif text-green-800">Daily Bible Verse & Sermon</h1>
+          <p className="text-gray-600">Reflect on God's word through NIV Scripture</p>
         </header>
         
-        <div className="bg-amber-50 p-6 rounded-md mb-6 border-l-4 border-green-700">
-          <p className="text-lg md:text-xl italic mb-3">"{verse.text}"</p>
-          <p className="text-right font-bold text-green-800">{verse.reference}</p>
-        </div>
-        
-        <div className="mt-8">
-          <h2 className="text-xl font-serif text-green-800 pb-3 border-b border-gray-200">Today's Reflection</h2>
-          <div className="mt-4 text-gray-700 leading-relaxed">{verse.lesson}</div>
-        </div>
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-green-700 border-r-transparent"></div>
+            <p className="mt-4 text-gray-600">Finding today's message...</p>
+          </div>
+        ) : (
+          <>
+            <div className="bg-amber-50 p-6 rounded-md mb-6 border-l-4 border-green-700">
+              <p className="text-lg md:text-xl italic mb-3">"{verse.text}"</p>
+              <p className="text-right font-bold text-green-800">{verse.reference} (NIV)</p>
+            </div>
+            
+            <div className="mt-8">
+              <h2 className="text-xl font-serif text-green-800 pb-3 border-b border-gray-200">Today's Sermon</h2>
+              <div className="mt-4 text-gray-700 leading-relaxed space-y-4">
+                {verse.sermon.split('\n\n').map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
         
         <button 
-          onClick={displayRandomVerse}
-          className="mt-8 mx-auto block bg-green-700 hover:bg-green-800 text-white py-2 px-6 rounded-md"
+          onClick={fetchRandomVerse}
+          className="mt-8 mx-auto block bg-green-700 hover:bg-green-800 text-white py-2 px-6 rounded-md disabled:bg-gray-400"
+          disabled={isLoading}
         >
-          Get Another Verse
+          {isLoading ? 'Loading...' : 'Get Another Verse & Sermon'}
         </button>
         
         <footer className="mt-8 text-center text-gray-500 text-sm">
